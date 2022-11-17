@@ -1,0 +1,87 @@
+<template>
+    <v-container>
+        <v-row no-gutters justify="space-between">
+            <v-col cols="4" class="pa-3 mr-5">
+                <h2>Users</h2>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col cols="4" class="d-flex justify-end">
+                <v-btn :to="{ name: 'User' }" rounded="lg" color="info" variant="outlined" prepend-icon="mdi-keyboard-backspace">
+                    Kembali
+                </v-btn>
+            </v-col>
+        </v-row>
+        <v-row no-gutters>
+            <v-col sm="10" class="mx-auto">
+                <v-card class="pa-5">
+                    <v-card-title>Edit Mahasiswa</v-card-title>
+                    <v-divider></v-divider>
+                    <form class="pa-5">
+                        <v-text-field v-model="user.nama" label="Nama" variant="outlined" prepend-icon="mdi-note" :rules="rules"></v-text-field>
+                        <v-text-field v-model="user.mahasiswa.nrp" label="NRP" variant="outlined" prepend-icon="mdi-view-list" :rules="rules"></v-text-field>
+                        <v-text-field readonly v-model="user.email" label="Email" variant="outlined" prepend-icon="mdi-at" :rules="rules"></v-text-field>
+                        <v-text-field v-model="user.newPassword" label="New Password" variant="outlined" prepend-icon="mdi-form-textbox-password" :rules="rules"></v-text-field>
+                        <v-select
+                            label="Status"
+                            prepend-icon="mdi-list-status"
+                            :items="['Active', 'Inactive']"
+                            variant="outlined"
+                            v-model="user.mahasiswa.status"
+                            :rules="rules"
+                        ></v-select>
+                        <v-textarea v-model="user.mahasiswa.alamat" label="Alamat" variant="outlined" prepend-icon="mdi-map-marker" :rules="rules"></v-textarea>
+                        <v-text-field v-model="user.mahasiswa.kelas" label="Kelas" variant="outlined" prepend-icon="mdi-google-classroom" :rules="rules"></v-text-field>
+                        <v-text-field v-model="user.mahasiswa.angkatan" label="Angkatan" variant="outlined" prepend-icon="mdi-book-variant" :rules="rules"></v-text-field>
+                        <v-btn @click="submitForm" class="mt-3" color="success">Update Mahasiswa</v-btn>
+                    </form>
+                </v-card>
+            </v-col>
+        </v-row>
+    </v-container>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+    data(){
+        return {
+            rules: [(value) => !!value || "This field is required"],
+            user: {
+                nama: "",
+                email: "",
+                newPassword: "",
+                role: "Mahasiswa",            
+                mahasiswa: {
+                    nrp: '',
+                    status: 'Active',
+                    alamat: '',
+                    angkatan: '',
+                    kelas: '',
+                },
+            },
+        };
+    },
+    methods: {
+        async submitForm(){
+            await axios
+                .patch('/api/v1/users/' + this.$route.params.id, this.user)
+                .then(res => {
+                    const response = res.data;
+                    console.log(response);
+                    this.$router.push({name: "User", params: { message: response.message }})
+                });
+        },
+        async getDetail(){
+            await axios
+                .get('/api/v1/users/' + this.$route.params.id)
+                .then(res => {
+                    this.user = res.data;
+                });
+        }
+    },
+    async created(){
+        await this.getDetail();
+    }
+}
+</script>
