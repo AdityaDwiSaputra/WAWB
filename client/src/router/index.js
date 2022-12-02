@@ -106,7 +106,7 @@ const routes = [
           component: () => import('../views/pages/permohonan/EditPermohonan'),
         },
         {
-          name: 'EditPermohonan',
+          name: 'PenangananPermohonan',
           path: '/penanganan-permohonan/:id',
           component: () => import('../views/pages/permohonan/PenangananPermohonan'),
         },

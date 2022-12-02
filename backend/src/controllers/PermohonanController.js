@@ -9,7 +9,7 @@ export const getAllPermohonan = async(req, res) => {
             const applications = await Permohonan.find({'status' : { $ne : 'Draft'}}).sort({ created: -1 });
             return res.status(200).json(applications);
         }else if(req.user.role == 'Tenaga_Kesehatan'){
-            const applications = await Permohonan.find({'status' : 'Confirmed'}).sort({ created: -1 });
+            const applications = await Permohonan.find({'status' : { $in: ['Disetujui', 'Done'] }}).sort({ created: -1 });
             return res.status(200).json(applications);
         }else{
             const applications = [];
